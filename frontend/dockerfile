@@ -4,19 +4,18 @@ FROM node:18
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./ 
+# Copy package.json and package-lock.json separately
+COPY package.json package-lock.json ./
 
 # Clear npm cache and install dependencies using npm ci
 RUN npm config set registry https://registry.npmjs.org/ && \
-    npm cache clean --force && \
     npm install --no-optional --verbose
 
 # Copy the rest of your application code
-COPY . . 
+COPY . .
 
 # Build the application
-RUN npm run build 
+RUN npm run build
 
 # Expose the port that your app runs on
 EXPOSE 3000
