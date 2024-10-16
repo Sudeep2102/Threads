@@ -7,14 +7,12 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
-# Configure npm settings for better performance
-RUN npm config set registry https://registry.npmjs.org/
-RUN npm config set fetch-retries 5
-RUN npm config set fetch-retry-mintimeout 20000
-RUN npm config set fetch-retry-maxtimeout 120000
-
-# Install dependencies
-RUN npm install --verbose  # Verbose output for debugging
+# Set npm configurations and install dependencies
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm install --no-optional --verbose
 
 # Copy the rest of your application code
 COPY . .
