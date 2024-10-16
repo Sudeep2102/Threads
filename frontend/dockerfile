@@ -5,20 +5,18 @@ FROM node:18
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./ 
 
-# Set npm configurations and install dependencies
+# Clear npm cache and install dependencies using npm ci
 RUN npm config set registry https://registry.npmjs.org/ && \
-    npm config set fetch-retries 5 && \
-    npm config set fetch-retry-mintimeout 20000 && \
-    npm config set fetch-retry-maxtimeout 120000 && \
+    npm cache clean --force && \
     npm install --no-optional --verbose
 
 # Copy the rest of your application code
-COPY . .
+COPY . . 
 
 # Build the application
-RUN npm run build
+RUN npm run build 
 
 # Expose the port that your app runs on
 EXPOSE 3000
