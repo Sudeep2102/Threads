@@ -1,20 +1,23 @@
-# Use the official Node.js image as a base
+# Use Node.js 14 as the base image
 FROM node:14
 
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./ 
+# Copy package.json and package-lock.json (if available) to install dependencies
+COPY package*.json ./
 
-# Install dependencies using npm ci
-RUN npm install --no-optional --verbose
+# Install backend dependencies
+RUN npm install
 
-# Copy the rest of your application code
-COPY . . 
+# Copy the backend source code
+COPY . .
 
-# Expose the port that your backend runs on
+# Copy the .env file
+COPY .env ./
+
+# Expose the backend port
 EXPOSE 5000
 
-# Start the backend application
+# Start the application
 CMD ["npm", "start"]

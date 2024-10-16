@@ -1,16 +1,27 @@
-services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend:/usr/src/app
-      - /usr/src/app/node_modules
+version: '3.8'  # Update the version if necessary
 
+services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/usr/src/app
-      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      # Specify your frontend-specific environment variables here
+      # Example: REACT_APP_API_URL: http://localhost:5000
+      REACT_APP_API_URL: "http://localhost:5000"  # Example variable, adjust as needed
+    depends_on:
+      - backend  # Optional, if the frontend depends on the backend being ready
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env  # Use the .env file for environment variables
+    # Optionally add volumes if you need to persist data
+    # volumes:
+    #   - ./backend:/usr/src/app  # Uncomment to mount local code in the container
