@@ -1,23 +1,37 @@
-version: '3.8'
-services:
-  backend:
-    build:
-      context: ./server
-    ports:
-      - "5000:5000" # Exposing backend port
-    environment:
-      - NODE_ENV=development
-      - MONGO_URI=mongodb://mongo:27017/items
-    depends_on:
-      - mongo
+version: '3.8'  # Update the version if necessary
 
+services:
   frontend:
     build:
-      context: ./client
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000" # Exposing frontend port
+      - "3000:3000"
+    environment:
+      # Frontend-specific environment variables here
+      REACT_APP_API_URL: "http://localhost:5000"  # Frontend will call the backend API
+    depends_on:
+      - backend  # Wait for the backend to be ready
 
-  mongo:
-    image: mongo
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "27017:27017" # Exposing MongoDB port
+      - "5000:5000"
+    env_file:
+      - ./backend/.env  # This links the .env file for backend use
+    volumes:
+      - ./backend:/usr/src/app  # Uncomment if you want local changes reflected in the container
+    depends_on:
+      - mongo  # If you're running MongoDB in a separate container (optional)
+
+  mongo:  # Optional MongoDB container
+    image: mongo:latest
+    ports:
+      - "27017:27017"  # Expose MongoDB
+    volumes:
+      - mongo-data:/data/db  # Persistent storage for MongoDB data
+
+volumes:
+  mongo-data:

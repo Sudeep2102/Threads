@@ -14,7 +14,8 @@ RUN npm install
 COPY . .
 
 # Copy the .env file
-COPY .env ./
+COPY .env .  
+#This ensures the .env file is copie
 
 # Expose the backend port
 EXPOSE 5000
