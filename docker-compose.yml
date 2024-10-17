@@ -1,37 +1,26 @@
-version: '3.8'  # Update the version if necessary
+version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      # Frontend-specific environment variables here
-      REACT_APP_API_URL: "http://localhost:5000"  # Frontend will call the backend API
-    depends_on:
-      - backend  # Wait for the backend to be ready
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
-    env_file:
-      - ./backend/.env  # This links the .env file for backend use
+      - "5000:5000"  # Map port 5000 of the container to port 5000 on the host
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
     volumes:
-      - ./backend:/usr/src/app  # Uncomment if you want local changes reflected in the container
-    depends_on:
-      - mongo  # If you're running MongoDB in a separate container (optional)
+      - ./backend:/app  # Optional: mount local code for live reload (development)
 
-  mongo:  # Optional MongoDB container
-    image: mongo:latest
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "27017:27017"  # Expose MongoDB
-    volumes:
-      - mongo-data:/data/db  # Persistent storage for MongoDB data
-
-volumes:
-  mongo-data:
+      - "3000:80"  # Map port 80 of the container to port 3000 on the host
+    environment:
+      VITE_API_URL=http://98.83.130.222:5000/api  # Update with your public IP

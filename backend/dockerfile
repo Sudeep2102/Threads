@@ -1,23 +1,19 @@
-# Use Node.js 14 as the base image
+# Backend Dockerfile
 FROM node:14
 
 # Set the working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and package-lock.json (if available) to install dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install backend dependencies
+# Install dependencies
 RUN npm install
 
-# Copy the backend source code
+# Copy the rest of your application code
 COPY . .
 
-# Copy the .env file
-COPY .env .  
-#This ensures the .env file is copie
-
-# Expose the backend port
+# Expose port 5000
 EXPOSE 5000
 
 # Start the application
